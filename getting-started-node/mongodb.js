@@ -1,13 +1,11 @@
-const { MongoClient } = require('mongodb');
-const CONFIG = require('./config')
+const { MongoClient } = require('mongodb')
+// const CONFIG = require('./config')
+const CONFIG = require('./config.json')
 
 
 async function connection() {
-  /**
-   * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
-   * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
-   */
-  const uri = CONFIG.APP.HOST
+
+  const uri = CONFIG.config.uri
 
   const client = new MongoClient(uri)
 
