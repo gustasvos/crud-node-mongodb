@@ -1,6 +1,9 @@
 const express = require('express')
 
 const { connection } = require('./mongodb')
+const { body, validationResult } = require('express-validator')
+const { insertBody } = require('./business/insert')
+const { deleteBody } = require('./business/delete')
 
 const app = express()
 const port = 5000
@@ -8,16 +11,21 @@ const port = 5000
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// create members
-app.post('/user', async (req, res) => {
-    let con = await connection()
-    let db = con.db().collection('teste')
-    req.body.members.forEach(e => {
-        db.insertOne({name: e.name, last_name: e.last_name})
-        console.log(e)
-    });
+app.get('/user', async (req, res) => {
+    res.send(req.body)
+})
 
-    // let result = await db.insertOne({name: req.body.members[0].name, last_name: ''})
+// create members
+app.post('/user',
+    body('members.*.name').isString(),
+    body('members.*.email').isEmail(),
+    body('members.*.age').isInt().optional(),
+    async (req, res) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+    }
+    let result = await insertBody(req.body)
     res.send()
 })
 
@@ -37,21 +45,14 @@ app.put('/user', async (req, res) => {
 
 // DELETE
 app.delete('/user', async (req, res) => {
-    let con = await connection()
-    let db = con.db().collection('teste')
-
-    db.find({}).toArray((err, result) => {
-        if (err) throw err
-        result = result.pop()
-
-        db.deleteOne(result, (err, obj) => {
-            if (err) throw err
-            console.log('1 doc deleted')
-        })
-    })
+    let result = await deleteBody(req.body)
     res.send()
 })
 
+// 404
+app.use(async (req,res) => {
+    res.status(404).send('Page not found')
+})
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`)
