@@ -1,6 +1,7 @@
 const { MongoClient } = require('mongodb')
 // const CONFIG = require('./config')
 const CONFIG = require('./config.json')
+const { updateBody } = require('./model/update')
 
 
 async function connection() {

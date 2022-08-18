@@ -1,6 +1,6 @@
 const express = require('express')
 
-const { connection } = require('./mongodb')
+// const { connection } = require('./mongodb')
 const { body, validationResult } = require('express-validator')
 const { insertBody } = require('./model/insert')
 const { deleteBody } = require('./model/delete')
@@ -31,8 +31,12 @@ app.post('/user',
 })
 
 // UPDATE
-app.put('/user', async (req, res) => {
-    let result = await updateBody(req.body)
+app.put('/user',
+    body('members.*.name').isString().optional(),
+    body('members.*.email').isEmail().optional(),
+    body('members.*.age').isInt().optional(),
+    async (req, res) => {
+        let result = await updateBody(req.body)
     res.send()
 })
 

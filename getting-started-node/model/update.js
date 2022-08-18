@@ -7,7 +7,7 @@ async function updateBody(body) {
 
     await db.updateOne(
         { name: a.name },
-        { $set: { email: "gustavo@email.com" }}
+        { $set: { email: "gustav1514om" }}
     )
     // let a = await db.findOne({name:"Gustavo"})
     // console.log(a.name)
